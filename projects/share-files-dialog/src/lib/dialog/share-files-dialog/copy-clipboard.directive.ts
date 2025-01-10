@@ -1,0 +1,31 @@
+import { Directive, EventEmitter, HostListener, Input, Output } from '@angular/core';
+
+@Directive({ selector: '[copy-clipboard]' })
+export class CopyClipboardDirective {
+  @Input('copy-clipboard') public payload: string;
+
+  @Output('copied')
+  public copied: EventEmitter<string> = new EventEmitter<string>();
+
+  @HostListener('click', ['$event'])
+  public onClick(event: MouseEvent): void {
+    event.preventDefault();
+    if (!this.payload) {
+      return;
+    }
+
+    const listener: (e: ClipboardEvent) => void = (e: ClipboardEvent) => {
+      e.preventDefault();
+      // tslint:disable-next-line: typedef
+      const clipboard = e.clipboardData || window['clipboardData'];
+      clipboard.setData('text', this.payload.toString());
+
+      this.copied.emit(this.payload);
+    };
+
+    document.addEventListener('copy', listener, false);
+    document.execCommand('copy');
+    document.removeEventListener('copy', listener, false);
+    navigator.clipboard.writeText(this.payload).then(() => this.copied.emit(this.payload));
+  }
+}

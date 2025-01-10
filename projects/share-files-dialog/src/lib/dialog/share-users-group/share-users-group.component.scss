@@ -1,0 +1,25 @@
+@import '../../../styles.scss';
+
+.user-details {
+  flex: 1 1 auto;
+  max-width: calc(100% - 95px);
+}
+
+.permission-select {
+  flex: 0 1 auto;
+  max-width: 120px;
+}
+
+.scroll {
+  overflow-y: auto;
+  max-height: 200px;
+}
+
+.attachment-scroll {
+  overflow-y: auto;
+  max-height: 135px;
+}
+
+.unshare-button {
+  width: 2.65rem;
+}

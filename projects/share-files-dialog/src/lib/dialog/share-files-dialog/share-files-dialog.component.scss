@@ -1,0 +1,26 @@
+.custom-angular2-multiselect {
+  flex: 1 1 auto;
+  border: 1px solid #c7c5c5;
+  border-radius: 10px;
+}
+
+.custom-angular2-multiselect:hover,
+.custom-angular2-multiselect:focus,
+.custom-angular2-multiselect:active {
+  outline: none;
+}
+
+.permission-select {
+  flex: 0 1 auto;
+  max-width: 120px;
+}
+
+.item-image {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.item-label {
+  margin: 0px;
+}

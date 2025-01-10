@@ -1,0 +1,16 @@
+<div class="d-flex flex-wrap my-n1 attached-files-container">
+  <div
+    *ngFor="let fileToShare of filesToShare; index as i"
+    class="btn btn-outline-secondary shadow-none my-1 mr-2 text-truncate d-flex align-items-center"
+  >
+    <span
+      *ngIf="attachedFilesContent && attachedFilesContent.fileTypeStyleMapper"
+      [attr.data-test-id]="'file-ext-icon-' + i"
+      class="mr-2"
+      [ngClass]="attachedFilesContent.fileTypeStyleMapper[fileToShare.file.type]"
+    ></span>
+    <span class="text-truncate" [attr.data-test-id]="'file-name-' + i">
+      {{ fileToShare.file.name }}
+    </span>
+  </div>
+</div>

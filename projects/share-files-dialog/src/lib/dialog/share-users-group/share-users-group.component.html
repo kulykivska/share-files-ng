@@ -1,0 +1,86 @@
+<div [ngClass]="showFilesAsAttachment ? 'attachment-scroll' : 'scroll'" *ngIf="shareUsersGroup">
+  <form [formGroup]="shareUsersGroup">
+    <div *ngFor="let content of permissionViewModels; index as i" class="d-flex justify-content-between p-1">
+      <div class="user-details">
+        <div class="media">
+          <img
+            *ngIf="content.user.imageUrl"
+            class="rounded mr-2 mr-sm-3"
+            width="36"
+            height="36"
+            [src]="content.user.imageUrl"
+            alt="avatar"
+            [attr.data-test-id]="'user-image-' + i"
+          />
+          <div class="media-body text-truncate d-flex flex-column align-self-center">
+            <p class="h6 text-truncate mb-0" [attr.data-test-id]="'user-displayName-' + i">
+              <strong>{{ content.user.displayName }}</strong>
+            </p>
+            <p
+              *ngIf="content.user.email"
+              class="h6 text-truncate mt-2 mr-2 mb-0"
+              [attr.data-test-id]="'user-email-' + i"
+            >
+              {{ content.user.email }}
+            </p>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="hasInjectedPermission">
+        <ng-container *ngIf="content.isCurrentUser; else editable">
+          <div class="d-flex align-items-center">
+            <!-- <span
+              *ngIf="content.permission === PermissionTypes.reader"
+              [attr.data-test-id]="'option-reader-' + i"
+            >
+              {{ content.permission }}
+            </span> -->
+            <select class="custom-select permission-select" [formControlName]="content.user.id" disabled>
+              <option [value]="PermissionTypes.reader" [attr.data-test-id]="'option-reader-' + i">
+                {{ permissionsLabels.reader }}
+              </option>
+              <option [value]="PermissionTypes.owner" [attr.data-test-id]="'option-owner-' + i">
+                {{ permissionsLabels.owner }}
+              </option>
+              <option
+                *ngIf="content.permission === PermissionTypes.multiple"
+                [value]="PermissionTypes.multiple"
+                [attr.data-test-id]="'option-multiple-' + i"
+              >
+                {{ permissionsLabels.multiple }}
+              </option>
+            </select>
+          </div>
+        </ng-container>
+        <ng-template #editable>
+          <div class="d-flex align-items-center">
+            <select class="custom-select permission-select" [formControlName]="content.user.id">
+              <option [value]="PermissionTypes.reader" [attr.data-test-id]="'option-reader-' + i">
+                {{ permissionsLabels.reader }}
+              </option>
+              <option [value]="PermissionTypes.owner" [attr.data-test-id]="'option-owner-' + i">
+                {{ permissionsLabels.owner }}
+              </option>
+              <option
+                *ngIf="content.permission === PermissionTypes.multiple"
+                [value]="PermissionTypes.multiple"
+                [attr.data-test-id]="'option-multiple-' + i"
+              >
+                {{ permissionsLabels.multiple }}
+              </option>
+            </select>
+            <button
+              class="d-flex btn btn-link p-2"
+              [class.unshare-button]="hasInjectedPermission"
+              [class.ml-2]="!hasInjectedPermission"
+              [attr.data-test-id]="'unshare-btn-' + i"
+              (click)="onUnshareFile(content)"
+            >
+              <i [ngClass]="unshareButtonStyle || 'icon-cross'"></i>
+            </button>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </form>
+</div>

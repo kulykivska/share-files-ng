@@ -1,0 +1,144 @@
+<div data-test-id="modal-share" *ngIf="arguments">
+  <form [formGroup]="shareForm">
+    <div class="modal-header text-truncate d-flex align-items-center">
+      <h4 class="modal-title text-truncate" data-test-id="modal-title">
+        {{ arguments.texting.title || 'Share Files' }}
+      </h4>
+      <button type="button" class="close" aria-label="Close" data-test-id="modal-btn-dismiss" (click)="onDismiss()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <label data-test-id="dialog-label" for="dialog-input">
+        {{ arguments.texting.shareToLabel || 'Share to:' }}
+      </label>
+      <div class="d-flex align-items-center px-1">
+        <angular2-multiselect
+          [data]="suggestedUsers"
+          formControlName="shareInput"
+          [settings]="searchSettings"
+          [(ngModel)]="selectedUsers"
+          (onDeSelectAll)="onDeSelectAllUsers()"
+          (onSelect)="onItemSelect($event)"
+          (onDeSelect)="onUnshareFileAction($event)" 
+          (onOpen)="onOpenDropdown()"
+          (onClose)="onCloseDropdown()"
+          >
+          <c-search>
+            <ng-template>
+              <input
+                #searchInput
+                type="text"
+                [placeholder]="arguments.texting.inputPlaceholder || 'Search users'"
+                style="border: none; width: 100%; height: 100%; outline: none"
+                data-test-id="search-input"
+                appDebounceKeyboardClick
+                (debounceKeyUp)="onSearchKeywordChanged($event)"
+                [debounceTime]="200"
+              />
+            </ng-template>
+          </c-search>
+          <c-item>
+            <ng-template let-item="item">
+              <img *ngIf="item.image" class="item-image" [src]="item.image" />
+              <label class="item-label">{{ item.itemName }}</label>
+            </ng-template>
+          </c-item>
+        </angular2-multiselect>
+        <select
+          *ngIf="!arguments.injectedPermission && selectedUsers.length > 0"
+          class="main-custom-select custom-select permission-select ml-1"
+          formControlName="permissionSelector"
+        >
+          <option selected [value]="PermissionTypes.reader">
+            {{ permissionsLabels.reader }}
+          </option>
+          <option [value]="PermissionTypes.owner">
+            {{ permissionsLabels.owner }}
+          </option>
+        </select>
+      </div>
+      <div *ngIf="arguments.filesToShare.length > 0" class="pt-3">
+        <dntl-share-users-group
+          [permissionViewModels]="currentPermissionViewModels"
+          [hasInjectedPermission]="!!arguments.injectedPermission"
+          [unshareButtonStyle]="arguments.styles.unshareButtonStyle"
+          [showFilesAsAttachment]="!!arguments.attachedFilesContent"
+          [permissionsLabels]="permissionsLabels"
+          [selectedUserIds]="selectedUserIds"
+          (onPermissionViewModelsChanged)="changePermissionForUser($event)"
+          (onUnshareFileAction)="onUnshareFileAction($event)"
+        ></dntl-share-users-group>
+      </div>
+    </div>
+    <div class="modal-footer py-2" *ngIf="arguments.filesToShare.length > 0 && arguments.attachedFilesContent">
+      <dntl-shared-files
+        class="w-100 pl-2"
+        [filesToShare]="arguments.filesToShare"
+        [attachedFilesContent]="arguments.attachedFilesContent"
+      ></dntl-shared-files>
+    </div>
+    <div class="px-3 pb-2 share-link-container" *ngIf="arguments.shareLinkAble">
+      <p>{{ arguments.texting.orGetLinkLabel || 'Or get link:' }}</p>
+      <div class="d-flex justify-content-between align-items-center">
+        <span *ngIf="!link" class="small">
+          {{ arguments.texting.noLinkLabel || 'No link created yet' }}
+        </span>
+        <span
+          *ngIf="link"
+          class="small"
+          [innerHTML]="
+            arguments.texting.existingLinkDescription ||
+            '<strong>Anyone</strong> with the link can <strong>view</strong> this file'
+          "
+        ></span>
+        <div>
+          <button
+            *ngIf="link"
+            [copy-clipboard]="link"
+            ngbTooltip="{{ arguments.texting.copyTooltipLabel || 'Copied' }}"
+            triggers="manual"
+            [autoClose]="false"
+            #tooltip="ngbTooltip"
+            (copied)="toggleTooltip(tooltip)"
+            type="button"
+            class="btn btn-link btn-sm mr-2"
+            data-test-id="btn-copy-to-clipboard-link"
+          >
+            {{ arguments.texting.copyToClipboardLabel || 'Copy to clipboard' }}
+          </button>
+          <button
+            *ngIf="link"
+            (click)="removeLink()"
+            type="button"
+            class="btn btn-link btn-sm"
+            data-test-id="btn-remove-link"
+          >
+            {{ arguments.texting.removeLinkLabel || 'Remove link' }}
+          </button>
+          <button
+            *ngIf="!link"
+            (click)="getShareableLink()"
+            type="button"
+            data-test-id="get-shareable-link-btn"
+            class="btn btn-link btn-sm"
+          >
+            {{ arguments.texting.getShareableLinkLabel || 'Get shareable link' }}
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer" data-test-id="modal-footer">
+      <button
+        type="submit"
+        class="btn"
+        [ngClass]="arguments.styles.shareButtonStyle || 'btn-primary'"
+        (click)="shareFiles()"
+        data-test-id="share-btn"
+        [disabled]="shareInput.invalid || hasMultiplePermission"
+      >
+        {{ arguments.texting.shareButtonLabel || 'Share' }}
+      </button>
+    </div>
+  </form>
+</div>

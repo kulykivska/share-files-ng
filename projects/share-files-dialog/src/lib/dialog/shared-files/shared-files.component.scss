@@ -1,0 +1,20 @@
+@import '../../../styles.scss';
+
+.btn:hover,
+.btn:active {
+  background-color: #f7f7f7;
+  color: #373a3c;
+}
+
+.btn {
+  color: #373a3c;
+}
+
+.btn-outline-secondary {
+  border-color: #c7c5c5;
+}
+
+.attached-files-container {
+  max-height: 135px;
+  overflow-y: auto;
+}
